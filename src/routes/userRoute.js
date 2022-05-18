@@ -1,9 +1,9 @@
 const { Router } = require('express');
-const userRoute = Router();
+const userRouter = Router();
 const mongoose = require('mongoose');
 const { User } = require('../models/User');
 
-userRoute.get('/', async (req, res) => {
+userRouter.get('/', async (req, res) => {
     try {
         const users = await User.find({});
         return res.send({ users });
@@ -16,7 +16,7 @@ userRoute.get('/', async (req, res) => {
     }
 })
 
-userRoute.post('/', async (req, res) => {
+userRouter.post('/', async (req, res) => {
     try {
         let { username, name } = req.body;
         if (!username) return res.status(400).send({ err: "username required" });
@@ -33,8 +33,7 @@ userRoute.post('/', async (req, res) => {
 
 });
 
-
-userRoute.get('/:id', async (req, res) => {
+userRouter.get('/:id', async (req, res) => {
     try {
         let { id } = req.params;
         if (!id) return res.status(400).send({ err: 'id is required' });
@@ -50,8 +49,7 @@ userRoute.get('/:id', async (req, res) => {
     }
 })
 
-
-userRoute.delete('/:id', async (req, res) => {
+userRouter.delete('/:id', async (req, res) => {
     try {
         let { id } = req.params;
         if (!id) return res.status(400).send({ err: 'id is required' });
@@ -67,7 +65,7 @@ userRoute.delete('/:id', async (req, res) => {
     }
 })
 
-userRoute.put('/:id', async (req, res) => {
+userRouter.put('/:id', async (req, res) => {
     try {
         let { id } = req.params;
         if (!id) return res.status(400).send({ err: 'id is required' });
@@ -82,18 +80,20 @@ userRoute.put('/:id', async (req, res) => {
         if (name) updateBody.name = name;
 
         const user = await User.findByIdAndUpdate(id, updateBody, { new: true });
-        
-        {/*
-        
-        또 다른 방법 -> DB를 두 번 왔다갔다하지만, 인스턴스 구조가 복잡하거나, 세부적으로 수정사항이 있을 경우 사용.
-        
-        const user = await User.findById(id);
-        if (age) user.age = age;
-        if (name) user.name = name;
-        
-        await user.save();
-        
-        */}
+
+        {
+            /*
+                    
+                    또 다른 방법 -> DB를 두 번 왔다갔다하지만, 인스턴스 구조가 복잡하거나, 세부적으로 수정사항이 있을 경우 사용.
+                    
+                    const user = await User.findById(id);
+                    if (age) user.age = age;
+                    if (name) user.name = name;
+                    
+                    await user.save();
+                    
+                    */
+        }
         return res.send({ user });
     }
     catch (err) {
@@ -103,4 +103,4 @@ userRoute.put('/:id', async (req, res) => {
 })
 
 
-module.exports = userRoute;
+module.exports = { userRouter };
