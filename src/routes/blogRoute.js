@@ -1,9 +1,11 @@
 const { Router } = require('express');
 const blogRouter = Router();
+const {commentRouter} = require('./commentRoute')
 const mongoose = require('mongoose');
-const { Blog } = require('../models/Blog');
-const { User } = require('../models/User');
+const { Blog, User } = require('../models');
 
+// 하위 comment Route 
+blogRouter.use('/:blogId/comment', commentRouter);
 
 // blog post 생성
 blogRouter.post('/', async (req, res) => {
