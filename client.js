@@ -11,7 +11,20 @@ const test = async () => {
         } = await axios.get(`${URI}/blog`);
         
         console.log(blogs[3]);
-        /*
+        
+        console.timeEnd("loading time: ");
+    }
+    catch (err) {
+        console.log(err);
+    }
+};
+
+const testGroup = async () => {
+    await test();
+}
+
+testGroup();
+/*
                 blogs = await Promise.all(
                     blogs.map(async (blog) => {
                         const [res_user, res_comment] = await Promise.all([
@@ -34,15 +47,3 @@ const test = async () => {
                 
                 */
         // console.dir(blogs[0], {depth: 10});
-        console.timeEnd("loading time: ");
-    }
-    catch (err) {
-        console.log(err);
-    }
-};
-
-const testGroup = async () => {
-    await test();
-}
-
-testGroup();
