@@ -1,8 +1,12 @@
 const { Router } = require('express');
 const blogRouter = Router();
-const {commentRouter} = require('./commentRoute')
+const { commentRouter } = require('./commentRoute')
 const mongoose = require('mongoose');
 const { Blog, User } = require('../models');
+
+
+
+
 
 // 하위 comment Route 
 blogRouter.use('/:blogId/comment', commentRouter);
@@ -32,7 +36,13 @@ blogRouter.post('/', async (req, res) => {
 // blog 게시글 불러오기
 blogRouter.get('/', async (req, res) => {
     try {
-        const blogs = await Blog.find({});
+        let blogs = await Blog.find({})
+        .limit(20)
+        .populate([
+            {path: 'user'}, 
+            {path: 'comments', 
+            populate: {path: 'user'}}]);
+        
         return res.send({ blogs });
     }
     catch (err) {

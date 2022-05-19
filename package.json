@@ -6,17 +6,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit1",
     "start": "node src/server.js",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon --ignore client.js src/server.js"
   },
   "author": "Soojin Lee",
   "dependencies": {
+    "axios": "^0.27.2",
     "cookie-parser": "~1.4.4",
+    "cors": "^2.8.5",
     "debug": "~2.6.9",
     "express": "~4.16.1",
+    "faker": "^5.5.3",
     "http-errors": "~1.6.3",
     "mongoose": "^6.3.3",
     "morgan": "~1.9.1",
-    "pug": "2.0.0-beta11"
+    "pug": "2.0.0-beta11",
+    "request-ip": "^2.1.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.6"

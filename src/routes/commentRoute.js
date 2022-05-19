@@ -20,8 +20,12 @@ commentRouter.post('/', async (req, res) => {
         if (!blog || !user) return res.status(400).send({ err: 'Either one of blog and user is required' });
 
         if (!blog.islive) return res.status(400).send({ err: 'this post has not been posted' });
-        const comment = new Comment({ content, user, blog });
-        await comment.save();
+        const comment = new Comment({ content, user, userFullName: `${user.name.first} ${user.name.last}`, blog });
+        await Promise.all([
+            comment.save(),
+            Blog.updateOne({ _id: blogId }, { $push: { comments: comment } })
+            ]);
+
         return res.send({ comment });
     }
     catch (err) {
