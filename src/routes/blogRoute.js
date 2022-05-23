@@ -36,12 +36,11 @@ blogRouter.post('/', async (req, res) => {
 // blog 게시글 불러오기
 blogRouter.get('/', async (req, res) => {
     try {
-        let blogs = await Blog.find({})
-        .limit(20)
-        .populate([
-            {path: 'user'}, 
-            {path: 'comments', 
-            populate: {path: 'user'}}]);
+        let blogs = await Blog.find({}).limit(200);
+        // .populate([
+        //     {path: 'user'}, 
+        //     {path: 'comments', 
+        //     populate: {path: 'user'}}]);
         
         return res.send({ blogs });
     }

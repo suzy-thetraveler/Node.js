@@ -27,39 +27,39 @@ generateFakeData = async (userCount, blogsPerUser, commentsPerUser) => {
     );
   }
 
-  users.map(async (user) => {
-    for (let i = 0; i < blogsPerUser; i++) {
-      blogs.push(
-        new Blog({
-          title: faker.lorem.words(),
-          content: faker.lorem.paragraphs(),
-          islive: true,
-          user,
-        })
-      );
-    }
-  });
+  // users.map(async (user) => {
+  //   for (let i = 0; i < blogsPerUser; i++) {
+  //     blogs.push(
+  //       new Blog({
+  //         title: faker.lorem.words(),
+  //         content: faker.lorem.paragraphs(),
+  //         islive: true,
+  //         user,
+  //       })
+  //     );
+  //   }
+  // });
 
-  users.map((user) => {
-    for (let i = 0; i < commentsPerUser; i++) {
-      let index = Math.floor(Math.random() * blogs.length);
-      comments.push(
-        new Comment({
-          content: faker.lorem.sentence(),
-          user,
-          blog: blogs[index]._id,
-        })
-      );
-    }
-  });
+  // users.map((user) => {
+  //   for (let i = 0; i < commentsPerUser; i++) {
+  //     let index = Math.floor(Math.random() * blogs.length);
+  //     comments.push(
+  //       new Comment({
+  //         content: faker.lorem.sentence(),
+  //         user,
+  //         blog: blogs[index]._id,
+  //       })
+  //     );
+  //   }
+  // });
 
   console.log("fake data inserting to database...");
   await User.insertMany(users);
   console.log(`${users.length} fake users generated!`);
-  await Blog.insertMany(blogs);
-  console.log(`${blogs.length} fake blogs generated!`);
-  await Comment.insertMany(comments);
-  console.log(`${comments.length} fake comments generated!`);
+  // await Blog.insertMany(blogs);
+  // console.log(`${blogs.length} fake blogs generated!`);
+  // await Comment.insertMany(comments);
+  // console.log(`${comments.length} fake comments generated!`);
   console.log("COMPLETE!!");
 };
 

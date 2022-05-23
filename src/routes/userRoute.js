@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const userRouter = Router();
 const mongoose = require('mongoose');
-const { User } = require('../models/User');
+const { User, Blog, Comment } = require('../models');
 
 userRouter.get('/', async (req, res) => {
     try {
@@ -55,7 +55,13 @@ userRouter.delete('/:id', async (req, res) => {
         if (!id) return res.status(400).send({ err: 'id is required' });
         if (!mongoose.isValidObjectId(id)) return res.status(400).send({ err: 'Invalid UserId' });
 
-        const user = await User.findOneAndDelete({ _id: id });
+        const [user] = await Promise.all([
+            User.findOneAndDelete({ _id: id }),
+            Blog.deleteMany({'user._id': id}),
+            Blog.updateMany({'comments.user': id}, {$pull : {comments: {user: id}}}),
+            Comment.deleteMany({user: id}),
+            ]);
+            
         return res.send({ user });
 
     }
@@ -77,7 +83,13 @@ userRouter.put('/:id', async (req, res) => {
 
         let updateBody = {};
         if (age) updateBody.age = age;
-        if (name) updateBody.name = name;
+        if (name) {
+            updateBody.name = name;
+            await Blog.updateMany({ 'user._id': id }, { 'user.name': name });
+            await Blog.updateMany({}, { 'comments.$[comment].userFullName': `${name.first} ${name.last}` }, {
+                arrayFilters: [{ 'comment.user': id }]
+            });
+        }
 
         const user = await User.findByIdAndUpdate(id, updateBody, { new: true });
 

@@ -6,11 +6,7 @@ const URI = 'http://15.165.99.93:3000'
 const test = async () => {
     try {
         console.time("loading time: ");
-        let {
-            data: { blogs }
-        } = await axios.get(`${URI}/blog`);
-        
-        console.log(blogs[3]);
+         await axios.get(`${URI}/blog`);
         
         console.timeEnd("loading time: ");
     }
@@ -20,6 +16,11 @@ const test = async () => {
 };
 
 const testGroup = async () => {
+    await test();
+    await test();
+    await test();
+    await test();
+    await test();
     await test();
 }
 

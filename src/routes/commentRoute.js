@@ -46,6 +46,24 @@ commentRouter.get('/', async (req, res) => {
         console.log(err);
         return res.status(500).send({ err: err.message });
     }
+});
+
+commentRouter.patch('/:commentId', async (req, res) => {
+    const { commentId } = req.params;
+    const { content } = req.body;
+    if (typeof content !== 'string') return res.status(400).send({ err: 'content is required' });
+
+    const [comment] = await Promise.all([
+        Comment.findOneAndUpdate({ _id: commentId }, { content }, { new: true }),
+        Blog.updateOne({ 'comments._id': commentId }, { 'comments.$.content': content })
+        ])
+});
+
+commentRouter.delete('/:commentId', async (req, res) => {
+    const { commentId } = req.params;
+    const comment = await Comment.findOneAndDelete({ _id: commentId });
+    await Blog.updateOne({ 'comments._id': commentId }, { $pull: { comments: { _id: commentId } } });
+    return res.send({ comment });
 })
 
 module.exports = { commentRouter };
