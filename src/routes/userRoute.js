@@ -5,7 +5,9 @@ const { User, Blog, Comment } = require('../models');
 
 userRouter.get('/', async (req, res) => {
     try {
-        const users = await User.find({});
+        let { page } = req.query;
+        page = parseInt(page);
+        const users = await User.find({}).sort({ updatedAt: -1 }).skip(page * 3).limit(200);;
         return res.send({ users });
 
     }
@@ -57,11 +59,11 @@ userRouter.delete('/:id', async (req, res) => {
 
         const [user] = await Promise.all([
             User.findOneAndDelete({ _id: id }),
-            Blog.deleteMany({'user._id': id}),
-            Blog.updateMany({'comments.user': id}, {$pull : {comments: {user: id}}}),
-            Comment.deleteMany({user: id}),
+            Blog.deleteMany({ 'user._id': id }),
+            Blog.updateMany({ 'comments.user': id }, { $pull: { comments: { user: id } } }),
+            Comment.deleteMany({ user: id }),
             ]);
-            
+
         return res.send({ user });
 
     }

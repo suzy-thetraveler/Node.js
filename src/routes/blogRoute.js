@@ -2,7 +2,7 @@ const { Router } = require('express');
 const blogRouter = Router();
 const { commentRouter } = require('./commentRoute')
 const mongoose = require('mongoose');
-const { Blog, User } = require('../models');
+const { Blog, User, Comment } = require('../models');
 
 
 
@@ -36,12 +36,15 @@ blogRouter.post('/', async (req, res) => {
 // blog 게시글 불러오기
 blogRouter.get('/', async (req, res) => {
     try {
-        let blogs = await Blog.find({}).limit(200);
+        let { page =0 } = req.query;
+        page = parseInt(page);
+        const {blogId} = req.params;
+        let blogs = await Blog.find({blog: blogId}).sort({ createdAt: -1 }).skip(page * 3).limit(3);
         // .populate([
         //     {path: 'user'}, 
         //     {path: 'comments', 
         //     populate: {path: 'user'}}]);
-        
+
         return res.send({ blogs });
     }
     catch (err) {
@@ -58,7 +61,8 @@ blogRouter.get('/:blogId', async (req, res) => {
         if (!mongoose.isValidObjectId(blogId)) return res.status(400).send({ err: 'Invalid BlogId' });
 
         const blog = await Blog.findById(blogId);
-        return res.send({ blog });
+        const commentCount = await Comment.find({blog: blogId}).countDocuments();
+        return res.send({ blog, commentCount });
 
     }
     catch (err) {
